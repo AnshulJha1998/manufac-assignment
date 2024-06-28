@@ -29,9 +29,10 @@ export const transFormedData = (
       year: each.Year.slice(-4),
       cropName: each["Crop Name"],
       cropProd: checkEmptyValues(each["Crop Production (UOM:t(Tonnes))"]),
-      cropYield:
-        each["Yield Of Crops (UOM:Kg/Ha(KilogramperHectare))"].toString(),
-      area: each["Area Under Cultivation (UOM:Ha(Hectares))"].toString(),
+      cropYield: checkEmptyValues(
+        each["Yield Of Crops (UOM:Kg/Ha(KilogramperHectare))"]
+      ),
+      area: checkEmptyValues(each["Area Under Cultivation (UOM:Ha(Hectares))"]),
     };
   });
 };
@@ -116,7 +117,6 @@ export const tabel2Data = (data: MANUFAC_DATA_TYPE[]): TABLE_2_DATA[] => {
     groupedByCrop[entry.cropName].push(entry);
   });
 
-  console.log(groupedByCrop);
   //Prepare the table structure
   const table: TABLE_2_DATA[] = [];
 
@@ -124,14 +124,13 @@ export const tabel2Data = (data: MANUFAC_DATA_TYPE[]): TABLE_2_DATA[] => {
     const cropsOfYear = groupedByCrop[crop];
 
     //Using reduce to find max and min crop
-    const { totalYield, totalArea, count } = cropsOfYear.reduce(
+    const { totalYield, totalArea } = cropsOfYear.reduce(
       (acc, curr) => {
         const cropyeild = parseFloat(curr.cropYield);
         const croparea = parseFloat(curr.area);
 
         if (!isNaN(cropyeild)) {
           acc.totalYield += cropyeild;
-          acc.count++;
         }
 
         if (!isNaN(croparea)) {
@@ -143,17 +142,16 @@ export const tabel2Data = (data: MANUFAC_DATA_TYPE[]): TABLE_2_DATA[] => {
       {
         totalYield: 0,
         totalArea: 0,
-        count: 0,
       }
     );
 
-    const averageYield = totalYield / count;
+    const averageYield = totalYield / cropsOfYear.length;
     const averageArea = totalArea / cropsOfYear.length;
 
     table.push({
       crop: crop,
-      cropYield: averageYield.toString(),
-      cropArea: averageArea.toString(),
+      cropYield: averageYield.toFixed(2).toString(),
+      cropArea: averageArea.toFixed(2).toString(),
     });
   });
 
