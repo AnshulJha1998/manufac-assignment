@@ -150,8 +150,8 @@ export const tabel2Data = (data: MANUFAC_DATA_TYPE[]): TABLE_2_DATA[] => {
 
     table.push({
       crop: crop,
-      cropYield: averageYield.toFixed(2).toString(),
-      cropArea: averageArea.toFixed(2).toString(),
+      cropYield: averageYield.toFixed(3).toString(),
+      cropArea: averageArea.toFixed(3).toString(),
     });
   });
 
